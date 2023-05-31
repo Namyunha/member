@@ -15,6 +15,7 @@
         <th>전화번호</th>
         <th>수정</th>
         <th>조회</th>
+        <th>삭제</th>
     </tr>
     <tr th:each="member: ${list}">
         <td th:text="${member.memberEmail}"></td>
@@ -23,6 +24,7 @@
         <td th:text="${member.memberMobile}"></td>
         <td><a th:href="@{|/member/update/${member.id}|}">수정</a></td>
         <td><a th:href="@{|/member/${member.id}|}">조회</a></td>
+        <td><a th:href="@{|/member/delete/${member.id}|}">삭제</a></td>
     </tr>
 </table>
 

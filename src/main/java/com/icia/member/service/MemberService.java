@@ -27,7 +27,7 @@ public class MemberService {
         MemberEntity memberEntity = MemberEntity.toUdateEntity(memberDTO);
         System.out.println("service: memberUpdateEntity = " + memberEntity);
         memberRepository.save(memberEntity);
-        System.out.println("회원가입성공");
+        System.out.println("수정성공");
     }
 
     public List<MemberDTO> findAll() {
@@ -51,8 +51,17 @@ public class MemberService {
             System.out.println("없다");
             return null;
         }
-
     }
 
-
+    public void delete(Long id) {
+        Optional<MemberEntity> optionalMemberEntity = memberRepository.findById(id);
+        if (optionalMemberEntity.isPresent()) {
+            System.out.println("삭제할 Entity 있음");
+            MemberEntity memberEntity = optionalMemberEntity.get();
+            System.out.println(memberEntity.getMemberName());
+            memberRepository.delete(memberEntity);
+        } else {
+            System.out.println("삭제할 Entity 없음");
+        }
+    }
 }
