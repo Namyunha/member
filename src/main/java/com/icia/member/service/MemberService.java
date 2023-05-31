@@ -64,4 +64,34 @@ public class MemberService {
             System.out.println("삭제할 Entity 없음");
         }
     }
+
+    public MemberDTO login(MemberDTO memberDTO) {
+        System.out.println(memberDTO.getMemberEmail());
+        System.out.println(memberDTO.getMemberPassword());
+        Optional<MemberEntity> optionalMemberEntity = memberRepository.findByMemberEmailAndMemberPassword(memberDTO.getMemberEmail(), memberDTO.getMemberPassword());
+        if (optionalMemberEntity.isPresent()) {
+            System.out.println("로그인 성공");
+            MemberEntity memberEntity = optionalMemberEntity.get();
+            return MemberDTO.toDTO(memberEntity);
+        } else {
+            System.out.println("로그인 실패");
+            return null;
+        }
+    }
+
+    public String findByEmail(String email) {
+        System.out.println("service: email = " + email);
+        Optional<MemberEntity> optionalMemberEntity = memberRepository.findByMemberEmail(email);
+        MemberEntity memberEntity = optionalMemberEntity.get();
+        System.out.println("memberEntity = " + memberEntity.getMemberEmail());
+        String memberEM = memberEntity.getMemberEmail();
+        if (memberEM.equals(email)) {
+            System.out.println("중복된 이메일이 있음");
+            return null;
+        } else {
+            System.out.println("해당 이메일 사용가능");
+            String memberEmail = memberEntity.getMemberEmail();
+            return memberEmail;
+        }
+    }
 }

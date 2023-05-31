@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <script src="https://code.jquery.com/jquery-3.6.1.min.js"></script>
 </head>
 <body>
 <div th:replace="component/header :: header"></div>
@@ -11,7 +12,8 @@
 <form action="/member/save" method="post">
     <label for="memberEmail">
         이메일:
-        <input type="text" id="memberEmail" name="memberEmail">
+        <input onblur="emailCheck()" type="text" id="memberEmail" name="memberEmail">
+        <p id="resultArea"></p>
     </label>
     <br>
     <label for="memberPassword">
@@ -37,4 +39,23 @@
 </form>
 <div th:replace="component/footer :: footer"></div>
 </body>
+<script>
+    const emailCheck = () => {
+        let email = document.querySelector("#memberEmail").value;
+        const resultArea = document.getElementById("resultArea");
+        $.ajax({
+            type: "post",
+            url: "/member/emailCheck",
+            data: {
+                memberEmail: email
+            },
+            success: function (res) {
+                resultArea.innerHTML = "사용가는한 이메일입니다";
+            },
+            error: function () {
+                resultArea.innerHTML = "해당 이메일은 존재합니다";
+            }
+        })
+    }
+</script>
 </html>
