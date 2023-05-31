@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div th:replace="component/header :: header"></div>
+<div th:replace="component/nav :: nav"></div>
+<h2>회원가입</h2>
+<form action="/member/save" method="post">
+    <label for="memberEmail">
+        이메일:
+        <input type="text" id="memberEmail" name="memberEmail">
+    </label>
+    <br>
+    <label for="memberPassword">
+        비밀번호:
+        <input type="text" id="memberPassword" name="memberPassword">
+    </label>
+    <br>
+    <label for="memberName">
+        이름:
+        <input type="text" id="memberName" name="memberName">
+    </label>
+    <br>
+    <label for="memberBirth">
+        생일:
+        <input type="date" id="memberBirth" name="memberBirth">
+    </label>
+    <br>
+    <label for="memberMobile">
+        전화번호:
+        <input type="text" id="memberMobile" name="memberMobile">
+    </label>
+    <input type="submit" value="회원가입">
+</form>
+<div th:replace="component/footer :: footer"></div>
+</body>
+</html>

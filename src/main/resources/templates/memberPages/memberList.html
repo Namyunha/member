@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+</head>
+<body>
+<table>
+    <tr>
+        <th>이메일</th>
+        <th>이름</th>
+        <th>생일</th>
+        <th>전화번호</th>
+        <th>수정</th>
+        <th>조회</th>
+    </tr>
+    <tr th:each="member: ${list}">
+        <td th:text="${member.memberEmail}"></td>
+        <td th:text="${member.memberName}"></td>
+        <td th:text="${member.memberBirth}"></td>
+        <td th:text="${member.memberMobile}"></td>
+        <td><a th:href="@{|/member/update/${member.id}|}">수정</a></td>
+        <td><a th:href="@{|/member/${member.id}|}">조회</a></td>
+    </tr>
+</table>
+
+</body>
+</html>
