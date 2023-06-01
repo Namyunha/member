@@ -103,13 +103,12 @@ public class MemberController {
 //        return "redirect:list";
 //    }
 
-    @PostMapping("/update/{id}")
-    public ResponseEntity updateParam(@RequestBody MemberDTO memberDTO, @PathVariable Long id) {
+    @PostMapping("/update")
+    public ResponseEntity updateParam(@RequestBody MemberDTO memberDTO) {
         System.out.println("memberDTO = " + memberDTO);
         memberService.update(memberDTO);
         return new ResponseEntity<>(HttpStatus.OK);
     }
-
 
     @GetMapping("/delete/{id}")
     public String deleteParam(@PathVariable Long id) {
@@ -119,7 +118,6 @@ public class MemberController {
 
     @GetMapping("/memberMain")
     public String memberMain(HttpSession session, Model model) {
-
         String loginEmail = (String) session.getAttribute("loginDTO");
         MemberDTO memberDTO = memberService.findByEmail(loginEmail);
         model.addAttribute("memberDTO", memberDTO);
@@ -156,6 +154,5 @@ public class MemberController {
         memberService.delete(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
-
 
 }

@@ -2,6 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <th:block th:replace="component/config :: config"></th:block>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 </head>
 <body>
 <div th:replace="component/header :: header"></div>
@@ -11,7 +12,7 @@
     <input type="text" th:value="${member.id}" name="id" readonly>
     <label for="memberEmail">
         이메일
-        <input type="text" id="memberEmail" th:value="${member.memberEmail}" name="memberEmail" >
+        <input type="text" id="memberEmail" th:value="${member.memberEmail}" name="memberEmail">
     </label>
     <br>
     <label for="memberPassword">
@@ -43,10 +44,11 @@
         const memberName = document.querySelector("#memberName").value;
         const memberBirth = document.querySelector("#memberBirth").value;
         const memberMobile = document.querySelector("#memberMobile").value;
+        console.log("console: " + memberEmail);
         axios({
             method: "post",
-            url: "/member/update/"+id,
-            type: {
+            url: "/member/update",
+            data: {
                 id: id,
                 memberEmail: memberEmail,
                 memberPassword: memberPassword,
