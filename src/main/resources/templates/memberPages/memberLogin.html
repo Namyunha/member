@@ -1,15 +1,41 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <th:block th:replace="component/config :: config"></th:block>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 </head>
 <body>
-    <h2>login</h2>
-    <form action="/member/login" method="post">
-        <input type="text" id="email" placeholder="email" name="memberEmail"> <br>
-        <input type="password" id="password" placeholder="password" name="memberPassword"> <br>
-        <input type="submit" placeholder="로그인하기"> <br>
-    </form>
+<div th:replace="component/header :: header"></div>
+<div th:replace="component/nav :: nav"></div>
+<h2>login</h2>
+<form action="/member/login" method="post">
+    <input type="text" id="email" placeholder="email" name="memberEmail"> <br>
+    <input type="password" id="password" placeholder="password" name="memberPassword"> <br>
+    <input type="button" placeholder="로그인하기" onclick="login()"> <br>
+
+</form>
+
+<div th:replace="component/footer :: footer">
+</div>
 </body>
+
+<script>
+    const login = () => {
+        const email = document.querySelector('input[name="memberEmail"]').value;
+        const password = document.querySelector('input[name="memberPassword"]').value;
+        axios({
+            method: "post",
+            url: "/member/login/axios",
+            data: {
+                memberEmail: email,
+                memberPassword: password
+            }
+        }).then(res => {
+            console.log("res", res);
+        }).catch(err => {
+            console.log("err", err);
+        });
+
+    }
+</script>
 </html>

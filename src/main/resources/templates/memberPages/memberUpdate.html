@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <th:block th:replace="component/config :: config"></th:block>
 </head>
 <body>
+<div th:replace="component/header :: header"></div>
+<div th:replace="component/nav :: nav"></div>
 <h2>update.html</h2>
 <form class="form-control" action="/member/update" method="post">
     <input type="text"  th:value="${member.id}" name="id">
@@ -34,5 +35,6 @@
     </label>
     <input type="submit" value="수정">
 </form>
+<div th:replace="component/footer :: footer"></div>
 </body>
 </html>

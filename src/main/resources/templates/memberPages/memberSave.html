@@ -1,15 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-    <script src="https://code.jquery.com/jquery-3.6.1.min.js"></script>
+    <!--    <script src="https://code.jquery.com/jquery-3.6.1.min.js"></script>-->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <th:block th:replace="component/config :: config"></th:block>
 </head>
 <body>
 <div th:replace="component/header :: header"></div>
 <div th:replace="component/nav :: nav"></div>
 <h2>회원가입</h2>
-<form action="/member/save" method="post">
+<form id="saveForm" name="saveForm">
     <label for="memberEmail">
         이메일:
         <input onblur="emailCheck()" type="text" id="memberEmail" name="memberEmail">
@@ -35,27 +35,52 @@
         전화번호:
         <input type="text" id="memberMobile" name="memberMobile">
     </label>
-    <input type="submit" value="회원가입">
 </form>
+    <input onclick="save()" type="submit" value="회원가입">
 <div th:replace="component/footer :: footer"></div>
 </body>
 <script>
     const emailCheck = () => {
         let email = document.querySelector("#memberEmail").value;
         const resultArea = document.getElementById("resultArea");
-        $.ajax({
-            type: "post",
+        console.log("console: " + email);
+        axios({
+            method: "post",
             url: "/member/emailCheck",
             data: {
                 memberEmail: email
-            },
-            success: function (res) {
-                resultArea.innerHTML = "사용가는한 이메일입니다";
-            },
-            error: function () {
-                resultArea.innerHTML = "해당 이메일은 존재합니다";
             }
+        }).then(res => {
+            resultArea.innerHTML = "사용가능한 이메일 입니다";
+            console.log("res: " + res);
+        }).catch(err => {
+            resultArea.innerHTML = "중복된 이메일 입니다";
+            console.log("err: " + err);
         })
     }
+    const save = () => {
+        const memberEmail = document.querySelector("#memberEmail").value;
+        const memberPassword = document.querySelector("#memberPassword").value;
+        const memberName = document.querySelector("#memberName").value;
+        const memberBirth = document.querySelector("#memberBirth").value;
+        const memberMobile = document.querySelector("#memberMobile").value;
+        axios({
+            url: "/member/save",
+            method: "post",
+            data: {
+                memberEmail: memberEmail,
+                memberPassword: memberPassword,
+                memberName: memberName,
+                memberBirth: memberBirth,
+                memberMobile: memberMobile
+            }
+        }).then(res => {
+            console.log("회원가입성공");
+            location.href = "/member/login";
+        }).catch(err => {
+            console.log("회원가입실패")
+        })
+    }
+
 </script>
 </html>

@@ -1,14 +1,16 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
-    <link rel="stylesheet" th:href="@{/css/main.css}">
+    <th:block th:replace="component/config :: config"></th:block>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 </head>
 <body>
-<table>
-    <tr>
+
+<div th:replace="component/header :: header"></div>
+<div th:replace="component/nav :: nav"></div>
+
+<table class="table">
+    <tr class="table-dark">
         <th>이메일</th>
         <th>이름</th>
         <th>생일</th>
@@ -24,9 +26,83 @@
         <td th:text="${member.memberMobile}"></td>
         <td><a th:href="@{|/member/update/${member.id}|}">수정</a></td>
         <td><a th:href="@{|/member/${member.id}|}">조회</a></td>
-        <td><a th:href="@{|/member/delete/${member.id}|}">삭제</a></td>
+        <td>
+            <button th:onclick="member_detail([[${member.id}]])">조회</button>
+        </td>
+        <!--        <td><a th:href="@{|/member/delete/${member.id}|}">삭제</a></td>-->
+        <td>
+            <button th:onclick="member_delete([[${member.id}]])">삭제</button>
+        </td>
     </tr>
 </table>
 
+<div id="detail-area"></div>
+
+<div th:replace="component/footer :: footer"></div>
+<script>
+    const member_delete = (id) => {
+        // location.href = "/member/delete" + id;
+        axios({
+            method: "delete",
+            url: "/member/" + id
+        }).then(res => {
+            alert("삭제완료! 확인을 클릭하면 목록으로 돌아갑니다!");
+            location.href = "/member/list"
+        }).catch(err => {
+            alert("삭제실패!");
+        })
+    }
+
+    const member_detail = (id) => {
+        console.log(id);
+        // location.href = "/member/" + id;
+        const detailArea = document.querySelector("#detail-area");
+        axios({
+            method: "get",
+            url: "/member/axios/" + id
+        }).then(res => {
+            console.log("res", res);
+            // 회원 데이터
+            console.log("res", res.data);
+            // 회원 이메일
+            console.log("res", res.data.memberEmail);
+            let result = "<table class=\"table table-striped\">\n" +
+                "        <tr>\n" +
+                "            <th>id</th>\n" +
+                "            <td>" + res.data.id + "</td>\n" +
+                "        </tr>\n" +
+                "        <tr>\n" +
+                "            <th>이메일</th>\n" +
+                "            <td>" + res.data.memberEmail + "</td>\n" +
+                "        </tr>\n" +
+                "        <tr>\n" +
+                "            <th>비밀번호</th>\n" +
+                "            <td>" + res.data.memberPassword + "</td>\n" +
+                "        </tr>\n" +
+                "        <tr>\n" +
+                "            <th>이름</th>\n" +
+                "            <td>" + res.data.memberName + "</td>\n" +
+                "        </tr>\n" +
+                "        <tr>\n" +
+                "            <th>생일</th>\n" +
+                "            <td>" + res.data.memberBirth + "</td>\n" +
+                "\n" +
+                "        </tr>\n" +
+                "        <tr>\n" +
+                "            <th>휴대폰번호</th>\n" +
+                "            <td>" + res.data.memberMobile + "</td>\n" +
+                "        </tr>\n" +
+                "        <tr>\n" +
+                "\n" +
+                "\n" +
+                "        </tr>\n" +
+                "    </table>";
+            detailArea.innerHTML = result;
+        }).catch(err => {
+            alert("해당 회원이 없습니다!");
+        })
+    }
+
+</script>
 </body>
 </html>

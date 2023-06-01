@@ -24,28 +24,52 @@ public class MemberController {
         return "memberPages/memberSave";
     }
 
+//    @PostMapping("/save")
+//    public String memberSaveParam(@ModelAttribute MemberDTO memberDTO) {
+//        System.out.println("memberDTO = " + memberDTO);
+//        memberService.save(memberDTO);
+//        return "redirect:login";
+//    }
+
+    //    @PostMapping("/save")
+//    public String save(@ModelAttribute MemberDTO memberDTO) {
+//        memberService.save(memberDTO);
+//        return "redirect:login";
+//    }
     @PostMapping("/save")
-    public String memberSaveParam(@ModelAttribute MemberDTO memberDTO) {
-        System.out.println("memberDTO = " + memberDTO);
+    public ResponseEntity saveParam(@RequestBody MemberDTO memberDTO) {
+        System.out.println("save: memberDTO = " + memberDTO);
         memberService.save(memberDTO);
-        return "redirect:login";
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @GetMapping("/login")
+
     public String memberLogin() {
         return "memberPages/memberLogin";
     }
 
+//    @PostMapping("login")
+//    public String loginParam(@ModelAttribute MemberDTO memberDTO, HttpSession session) {
+//        System.out.println(memberDTO.getMemberEmail());
+//        MemberDTO loginDTO = memberService.login(memberDTO);
+//        if (loginDTO == null) {
+//            return "redirect:login";
+//        } else {
+//            session.setAttribute("loginDTO", loginDTO.getMemberEmail());
+//            return "redirect:/";
+//        }
+//    }
+
     @PostMapping("login")
     public String loginParam(@ModelAttribute MemberDTO memberDTO, HttpSession session) {
         System.out.println(memberDTO.getMemberEmail());
-
-        MemberDTO loginDTO = memberService.login(memberDTO);
-        if (loginDTO == null) {
-            return "redirect:login";
+        boolean loginDTO = memberService.login2(memberDTO);
+        if (loginDTO) {
+            session.setAttribute("loginDTO", memberDTO.getMemberEmail());
+            return "redirect:memberMain";
         } else {
-            session.setAttribute("loginDTO", loginDTO.getMemberEmail());
-            return "redirect:/";
+            return "redirect:login";
         }
     }
 
@@ -55,7 +79,6 @@ public class MemberController {
         model.addAttribute("list", memberDTOList);
         return "memberPages/memberList";
     }
-
 
     @GetMapping("/{id}")
     public String memberDetail(@PathVariable Long id, Model model) {
@@ -80,21 +103,51 @@ public class MemberController {
         return "redirect:list";
     }
 
+
     @GetMapping("/delete/{id}")
     public String deleteParam(@PathVariable Long id) {
         memberService.delete(id);
         return "redirect:/member/list";
     }
 
+    @GetMapping("/memberMain")
+    public String memberMain(HttpSession session, Model model) {
+        String loginEmail = (String) session.getAttribute("loginDTO");
+        MemberDTO memberDTO = memberService.findByEmail(loginEmail);
+        model.addAttribute("memberDTO", memberDTO);
+        return "memberPages/memberMain";
+    }
+
+    @PostMapping("/login/axios")
+    public ResponseEntity memberLoginAxios(@RequestBody MemberDTO memberDTO, HttpSession session) throws Exception {
+        memberService.loginAxios(memberDTO);
+        session.setAttribute("loginEmail", memberDTO.getMemberEmail());
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping("/axios/{id}")
+    public ResponseEntity detailAxios(@PathVariable Long id) throws Exception {
+        System.out.println("axios: id = " + id);
+        MemberDTO memberDTO = memberService.findById(id);
+        return new ResponseEntity<>(memberDTO, HttpStatus.OK);
+    }
+
     @PostMapping("/emailCheck")
-    public ResponseEntity emailCheck(@RequestParam("memberEmail") String email) {
-        System.out.println("email: " + email);
-        String memberEmail = memberService.findByEmail(email);
-        System.out.println("memberEmail: " + memberEmail);
-        if (memberEmail == null) {
+    public ResponseEntity duCheck(@RequestBody MemberDTO memberDTO) {
+        String email = memberDTO.getMemberEmail();
+        MemberDTO memberDTO2 = memberService.findByEmail(email);
+        if (memberDTO2 == null) {
             return new ResponseEntity<>(HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity delete(@PathVariable Long id) {
+        memberService.delete(id);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+
 }

@@ -1,27 +1,46 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <th:block th:replace="component/config :: config"></th:block>
 </head>
 <body>
+<div th:replace="component/header :: header"></div>
+<div th:replace="component/nav :: nav"></div>
 <h2>detail.html</h2>
-<table>
-    <tr>
-        <th>이메일</th>
-        <th>비밀번호</th>
-        <th>이름</th>
-        <th>생일</th>
-        <th>휴대폰번호</th>
-    </tr>
-    <tr>
-        <td th:text="${member.memberEmail}"></td>
-        <td th:text="${member.memberPassword}"></td>
-        <td th:text="${member.memberName}"></td>
-        <td th:text="${member.memberBirth}"></td>
-        <td th:text="${member.memberMobile}"></td>
-    </tr>
-</table>
+<div id="section">
+    <table class="table table-striped">
+        <tr>
+            <th>id</th>
+            <td th:text="${member.id}"></td>
+        </tr>
+        <tr>
+            <th>이메일</th>
+            <td th:text="${member.memberEmail}"></td>
+        </tr>
+        <tr>
+            <th>비밀번호</th>
+            <td th:text="${member.memberPassword}"></td>
+        </tr>
+        <tr>
+            <th>이름</th>
+            <td th:text="${member.memberName}"></td>
+        </tr>
+        <tr>
+            <th>생일</th>
+            <td th:text="${member.memberBirth}"></td>
 
+        </tr>
+        <tr>
+            <th>휴대폰번호</th>
+            <td th:text="${member.memberMobile}"></td>
+        </tr>
+        <tr>
+
+
+        </tr>
+    </table>
+</div>
+
+<div th:replace="component/footer :: footer"></div>
 </body>
 </html>

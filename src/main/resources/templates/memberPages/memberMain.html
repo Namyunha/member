@@ -1,10 +1,22 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <th:block th:replace="component/config :: config"></th:block>
 </head>
 <body>
-
+<div th:replace="component/header :: header"></div>
+<div th:replace="component/nav :: nav"></div>
+<div id="seciton">
+    <p th:text="${session.loginEmail}"></p>
+    <p th:text="${memberDTO}"></p>
+    <button th:onclick="'update(\'' + ${memberDTO.id} + '\')'">회원정보수정</button>
+</div>
+<div th:replace="component/footer :: footer"></div>
+<script>
+    const update = (id) => {
+        console.log(id);
+        location.href = "/member/update/" + id;
+    }
+</script>
 </body>
 </html>
