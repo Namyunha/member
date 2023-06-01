@@ -96,11 +96,18 @@ public class MemberController {
         return "memberPages/memberUpdate";
     }
 
-    @PostMapping("/update")
-    public String updateParam(@ModelAttribute MemberDTO memberDTO) {
-        System.out.println("controller: memberDTO = " + memberDTO);
+    //    @PostMapping("/update")
+//    public String updateParam(@ModelAttribute MemberDTO memberDTO) {
+//        System.out.println("controller: memberDTO = " + memberDTO);
+//        memberService.update(memberDTO);
+//        return "redirect:list";
+//    }
+
+    @PostMapping("/update/{id}")
+    public ResponseEntity updateParam(@RequestBody MemberDTO memberDTO, @PathVariable Long id) {
+        System.out.println("memberDTO = " + memberDTO);
         memberService.update(memberDTO);
-        return "redirect:list";
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 
@@ -112,6 +119,7 @@ public class MemberController {
 
     @GetMapping("/memberMain")
     public String memberMain(HttpSession session, Model model) {
+
         String loginEmail = (String) session.getAttribute("loginDTO");
         MemberDTO memberDTO = memberService.findByEmail(loginEmail);
         model.addAttribute("memberDTO", memberDTO);

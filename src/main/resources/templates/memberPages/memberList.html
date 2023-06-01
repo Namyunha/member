@@ -17,6 +17,7 @@
         <th>전화번호</th>
         <th>수정</th>
         <th>조회</th>
+        <th>조회</th>
         <th>삭제</th>
     </tr>
     <tr th:each="member: ${list}">
@@ -40,18 +41,6 @@
 
 <div th:replace="component/footer :: footer"></div>
 <script>
-    const member_delete = (id) => {
-        // location.href = "/member/delete" + id;
-        axios({
-            method: "delete",
-            url: "/member/" + id
-        }).then(res => {
-            alert("삭제완료! 확인을 클릭하면 목록으로 돌아갑니다!");
-            location.href = "/member/list"
-        }).catch(err => {
-            alert("삭제실패!");
-        })
-    }
 
     const member_detail = (id) => {
         console.log(id);
@@ -103,6 +92,19 @@
         })
     }
 
+
+    const member_delete = (id) => {
+        // location.href = "/member/delete" + id;
+        axios({
+            method: "delete",
+            url: "/member/" + id
+        }).then(res => {
+            alert("삭제완료! 확인을 클릭하면 목록으로 돌아갑니다!");
+            location.href = "/member/list"
+        }).catch(err => {
+            alert("삭제실패!");
+        })
+    }
 </script>
 </body>
 </html>
