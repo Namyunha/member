@@ -9,10 +9,10 @@
 <div th:replace="component/nav :: nav"></div>
 <h2>update.html</h2>
 <form class="form-control" action="/member/update" method="post">
-    <input type="text" th:value="${member.id}" name="id" readonly>
+    <input type="hidden" th:value="${member.id}" name="id" readonly>
     <label for="memberEmail">
         이메일
-        <input type="text" id="memberEmail" th:value="${member.memberEmail}" name="memberEmail">
+        <input type="text" id="memberEmail" th:value="${member.memberEmail}" name="memberEmail" readonly>
     </label>
     <br>
     <label for="memberPassword">
@@ -37,31 +37,42 @@
     <input type="button" th:onclick="update([[${member.id}]])" value="수정">
 </form>
 <div th:replace="component/footer :: footer"></div>
-<script>
-    const update = (id) => {
-        const memberEmail = document.querySelector("#memberEmail").value;
-        const memberPassword = document.querySelector("#memberPassword").value;
-        const memberName = document.querySelector("#memberName").value;
-        const memberBirth = document.querySelector("#memberBirth").value;
-        const memberMobile = document.querySelector("#memberMobile").value;
+<script th:inline="javascript">
+    const update = () => {
+        // const memberEmail = document.querySelector("#memberEmail").value;
+        // const memberPassword = document.querySelector("#memberPassword").value;
+        // const memberName = document.querySelector("#memberName").value;
+        // const memberBirth = document.querySelector("#memberBirth").value;
+        // const memberMobile = document.querySelector("#memberMobile").value;
+        const passDB = [[${member.memberPassword}]];
+        const password = document.querySelector('input[name="memberPassword"]').value;
+        const id = document.querySelector('input[name="id"]').value;
+        const email = document.querySelector('input[name="memberEmail"]').value;
+        const name = document.querySelector('input[name="memberName"]').value;
+        const birth = document.querySelector('input[name="memberBirth"]').value;
+        const mobile = document.querySelector('input[name="memberMobile"]').value;
         console.log("console: " + memberEmail);
-        axios({
-            method: "post",
-            url: "/member/update",
-            data: {
-                id: id,
-                memberEmail: memberEmail,
-                memberPassword: memberPassword,
-                memberName: memberName,
-                memberBirth: memberBirth,
-                memberMobile: memberMobile
-            }
-        }).then(res => {
-            console.log("수정성공");
-            location.href = "/member/list";
-        }).catch(res => {
-            console.log("수정실패");
-        })
+        if (passDB == password) {
+            axios({
+                method: "put",
+                url: "/member/" + id,
+                data: {
+                    id: id,
+                    memberEmail: email,
+                    memberPassword: password,
+                    memberName: name,
+                    memberBirth: birth,
+                    memberMobile: mobile
+                }
+            }).then(res => {
+                console.log("수정성공");
+                location.href = "/member/" + id;
+            }).catch(err => {
+                alert("회원정보 수정 실패");
+            })
+        } else {
+            alert("비밀번호가 일치하지 않습니다!");
+        }
     }
 </script>
 </body>

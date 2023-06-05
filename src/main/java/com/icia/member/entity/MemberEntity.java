@@ -40,7 +40,6 @@ public class MemberEntity {
     }
 
     public static MemberEntity toUdateEntity(MemberDTO memberDTO) {
-        System.out.println("memberEntity: memberDTO = " + memberDTO);
         MemberEntity memberEntity = new MemberEntity();
         memberEntity.setId(memberDTO.getId());
         memberEntity.setMemberEmail(memberDTO.getMemberEmail());

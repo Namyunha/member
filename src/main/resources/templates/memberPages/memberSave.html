@@ -1,44 +1,61 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
     <!--    <script src="https://code.jquery.com/jquery-3.6.1.min.js"></script>-->
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <th:block th:replace="component/config :: config"></th:block>
+    <link rel="stylesheet" th:href="@{/css/save.css}">
+
 </head>
 <body>
 <div th:replace="component/header :: header"></div>
 <div th:replace="component/nav :: nav"></div>
-<h2>회원가입</h2>
-<form id="saveForm" name="saveForm">
-    <label for="memberEmail">
-        이메일:
-        <input onblur="emailCheck()" type="text" id="memberEmail" name="memberEmail">
-        <p id="resultArea"></p>
-    </label>
-    <br>
-    <label for="memberPassword">
-        비밀번호:
-        <input type="text" id="memberPassword" name="memberPassword">
-    </label>
-    <br>
-    <label for="memberName">
-        이름:
-        <input type="text" id="memberName" name="memberName">
-    </label>
-    <br>
-    <label for="memberBirth">
-        생일:
-        <input type="date" id="memberBirth" name="memberBirth">
-    </label>
-    <br>
-    <label for="memberMobile">
-        전화번호:
-        <input type="text" id="memberMobile" name="memberMobile">
-    </label>
-</form>
-    <input onclick="save()" type="submit" value="회원가입">
+<div>
+    <!--    <div class="form-floating mb-3">-->
+    <!--        <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com">-->
+    <!--        <label for="floatingInput">Email address</label>-->
+    <!--    </div>-->
+    <!--    <div class="form-floating">-->
+    <!--        <input type="password" class="form-control" id="floatingPassword" placeholder="Password">-->
+    <!--        <label for="floatingPassword">Password</label>-->
+    <!--    </div>-->
+    <form id="saveForm" name="saveForm">
+        <h2 class="title">회원가입</h2>
+        <label for="memberEmail">
+            이메일:
+            <input onblur="emailCheck()" type="text" id="memberEmail" name="memberEmail" class="form-control">
+            <p id="resultArea"></p>
+        </label>
+        <br>
+        <label for="memberPassword">
+            비밀번호:
+            <input type="text" id="memberPassword" name="memberPassword" class="form-control">
+        </label>
+        <br>
+        <label for="memberName">
+            이름:
+            <input type="text" id="memberName" name="memberName" class="form-control">
+        </label>
+        <br>
+        <label for="memberBirth">
+            생일:
+            <input type="date" id="memberBirth" name="memberBirth" class="form-control">
+        </label>
+        <br>
+        <label for="memberMobile">
+            전화번호:
+            <input type="text" id="memberMobile" name="memberMobile" class="form-control">
+        </label>
+    </form>
+</div>
+<label id="saveBtnlabel" for="saveBtn">
+    <input id="saveBtn" onclick="save()" type="submit" value="회원가입">
+</label>
 <div th:replace="component/footer :: footer"></div>
+
 </body>
+
 <script>
     const emailCheck = () => {
         let email = document.querySelector("#memberEmail").value;
@@ -46,15 +63,17 @@
         console.log("console: " + email);
         axios({
             method: "post",
-            url: "/member/emailCheck",
+            url: "/member/dup-check",
             data: {
                 memberEmail: email
             }
         }).then(res => {
             resultArea.innerHTML = "사용가능한 이메일 입니다";
+            resultArea.style.color = "green";
             console.log("res: " + res);
         }).catch(err => {
             resultArea.innerHTML = "중복된 이메일 입니다";
+            resultArea.style.color = "red";
             console.log("err: " + err);
         })
     }

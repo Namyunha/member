@@ -24,10 +24,12 @@ public class MemberService {
 //        System.out.println("회원가입성공");
 //    }
 
+
     public Long save(MemberDTO memberDTO) {
         MemberEntity memberEntity = MemberEntity.toSaveEntity(memberDTO);
         return memberRepository.save(memberEntity).getId();
     }
+
 
     public void update(MemberDTO memberDTO) {
         MemberEntity memberEntity = MemberEntity.toUdateEntity(memberDTO);

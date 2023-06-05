@@ -24,18 +24,6 @@ public class MemberController {
         return "memberPages/memberSave";
     }
 
-//    @PostMapping("/save")
-//    public String memberSaveParam(@ModelAttribute MemberDTO memberDTO) {
-//        System.out.println("memberDTO = " + memberDTO);
-//        memberService.save(memberDTO);
-//        return "redirect:login";
-//    }
-
-    //    @PostMapping("/save")
-//    public String save(@ModelAttribute MemberDTO memberDTO) {
-//        memberService.save(memberDTO);
-//        return "redirect:login";
-//    }
     @PostMapping("/save")
     public ResponseEntity saveParam(@RequestBody MemberDTO memberDTO) {
         System.out.println("save: memberDTO = " + memberDTO);
@@ -43,13 +31,48 @@ public class MemberController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @GetMapping("/login")
+    @GetMapping("/{id}")
+    public String memberDetail(@PathVariable Long id, Model model) {
+        MemberDTO memberDTO = memberService.findById(id);
+        System.out.println("memberDTO = " + memberDTO);
+        model.addAttribute("member", memberDTO);
+        return "memberPages/memberDetail";
+    }
 
-    public String memberLogin() {
+    @PutMapping("/{id}")
+    public ResponseEntity putUpdate(@RequestBody MemberDTO memberDTO) {
+        memberService.update(memberDTO);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity delete(@PathVariable Long id) {
+        memberService.delete(id);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping("/login")
+    public String memberLogin(@RequestParam(value = "redirectURI", defaultValue = "/member/mypage") String redirectURI, Model model) {
+        model.addAttribute("redirectURI", redirectURI);
         return "memberPages/memberLogin";
     }
 
-//    @PostMapping("login")
+    @GetMapping("/mypage")
+    public String myPage() {
+        return "memberPages/memberMain";
+    }
+
+//    @PostMapping("/login/axios")
+//    public ResponseEntity memberLoginAxios(@RequestBody MemberDTO memberDTO, HttpSession session) throws Exception {
+//        System.out.println("MemberDTO: " + memberDTO);
+//        memberService.loginAxios(memberDTO);
+//
+//        session.setAttribute("loginEmail", memberDTO.getMemberEmail());
+//        return new ResponseEntity<>(HttpStatus.OK);
+//    }
+
+
+    //    @PostMapping("login")
 //    public String loginParam(@ModelAttribute MemberDTO memberDTO, HttpSession session) {
 //        System.out.println(memberDTO.getMemberEmail());
 //        MemberDTO loginDTO = memberService.login(memberDTO);
@@ -62,12 +85,16 @@ public class MemberController {
 //    }
 
     @PostMapping("login")
-    public String loginParam(@ModelAttribute MemberDTO memberDTO, HttpSession session) {
+    public String loginParam(@ModelAttribute MemberDTO memberDTO, HttpSession session, @RequestParam("redirectURI") String redirectURI) {
         System.out.println(memberDTO.getMemberEmail());
         boolean loginDTO = memberService.login2(memberDTO);
         if (loginDTO) {
             session.setAttribute("loginDTO", memberDTO.getMemberEmail());
-            return "redirect:memberMain";
+//            return "redirect:memberMain";
+//            로그인 성공하면 사용자가 직전에 요청한 주소로 redirect
+//            인터셉터에 걸리지 않고 처음부터 로그인하는 사용자였다면
+//            redirect: /member/mypage로 요청되며, memberMain 화면으로 전환됨.
+            return "redirect:" + redirectURI;
         } else {
             return "redirect:login";
         }
@@ -80,56 +107,42 @@ public class MemberController {
         return "memberPages/memberList";
     }
 
-    @GetMapping("/{id}")
-    public String memberDetail(@PathVariable Long id, Model model) {
-        MemberDTO memberDTO = memberService.findById(id);
-        System.out.println("memberDTO = " + memberDTO);
-        model.addAttribute("member", memberDTO);
-        return "memberPages/memberDetail";
-    }
-
-    @GetMapping("/update/{id}")
-    public String memberUpdate(@PathVariable Long id, Model model) {
-        MemberDTO memberDTO = memberService.findById(id);
-        System.out.println("memberDTO = " + memberDTO);
+    @GetMapping("/update")
+    public String memberUpdate(HttpSession session, Model model) {
+        String loginDTO = (String) session.getAttribute("loginEmail");
+        System.out.println("update: loginDTO" + loginDTO);
+        MemberDTO memberDTO = memberService.findByEmail(loginDTO);
+        System.out.println("update: memberDTO = " + memberDTO);
         model.addAttribute("member", memberDTO);
         return "memberPages/memberUpdate";
     }
 
+    //    @PostMapping("/update")
+//    public ResponseEntity updateParam(@RequestBody MemberDTO memberDTO) {
+//        System.out.println("memberDTO = " + memberDTO);
+//        memberService.update(memberDTO);
+//        return new ResponseEntity<>(HttpStatus.OK);
+//    }
     //    @PostMapping("/update")
 //    public String updateParam(@ModelAttribute MemberDTO memberDTO) {
 //        System.out.println("controller: memberDTO = " + memberDTO);
 //        memberService.update(memberDTO);
 //        return "redirect:list";
 //    }
-
-    @PostMapping("/update")
-    public ResponseEntity updateParam(@RequestBody MemberDTO memberDTO) {
-        System.out.println("memberDTO = " + memberDTO);
-        memberService.update(memberDTO);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-
     @GetMapping("/delete/{id}")
     public String deleteParam(@PathVariable Long id) {
         memberService.delete(id);
         return "redirect:/member/list";
     }
 
-    @GetMapping("/memberMain")
-    public String memberMain(HttpSession session, Model model) {
-        String loginEmail = (String) session.getAttribute("loginDTO");
-        MemberDTO memberDTO = memberService.findByEmail(loginEmail);
-        model.addAttribute("memberDTO", memberDTO);
-        return "memberPages/memberMain";
-    }
+//    @GetMapping("/memberMain")
+//    public String memberMain(HttpSession session, Model model) {
+//        String loginEmail = (String) session.getAttribute("loginDTO");
+//        MemberDTO memberDTO = memberService.findByEmail(loginEmail);
+//        model.addAttribute("memberDTO", memberDTO);
+//        return "memberPages/memberMain";
+//    }
 
-    @PostMapping("/login/axios")
-    public ResponseEntity memberLoginAxios(@RequestBody MemberDTO memberDTO, HttpSession session) throws Exception {
-        memberService.loginAxios(memberDTO);
-        session.setAttribute("loginEmail", memberDTO.getMemberEmail());
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
 
     @GetMapping("/axios/{id}")
     public ResponseEntity detailAxios(@PathVariable Long id) throws Exception {
@@ -138,10 +151,9 @@ public class MemberController {
         return new ResponseEntity<>(memberDTO, HttpStatus.OK);
     }
 
-    @PostMapping("/emailCheck")
+    @PostMapping("/dup-check")
     public ResponseEntity duCheck(@RequestBody MemberDTO memberDTO) {
-        String email = memberDTO.getMemberEmail();
-        MemberDTO memberDTO2 = memberService.findByEmail(email);
+        MemberDTO memberDTO2 = memberService.findByEmail(memberDTO.getMemberEmail());
         if (memberDTO2 == null) {
             return new ResponseEntity<>(HttpStatus.OK);
         } else {
@@ -149,10 +161,5 @@ public class MemberController {
         }
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity delete(@PathVariable Long id) {
-        memberService.delete(id);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
 
 }

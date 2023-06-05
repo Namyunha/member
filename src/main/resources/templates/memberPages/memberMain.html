@@ -6,17 +6,15 @@
 <body>
 <div th:replace="component/header :: header"></div>
 <div th:replace="component/nav :: nav"></div>
-<div id="seciton">
+<div id="section">
     <p th:text="${session.loginEmail}"></p>
-    <p th:text="${memberDTO}"></p>
-    <button th:onclick="'update(\'' + ${memberDTO.id} + '\')'">회원정보수정</button>
+    <button onclick="update()">회원정보수정</button>
 </div>
 <div th:replace="component/footer :: footer"></div>
+</body>
 <script>
-    const update = (id) => {
-        console.log(id);
-        location.href = "/member/update/" + id;
+    const update = () => {
+        location.href = "/member/update";
     }
 </script>
-</body>
 </html>
